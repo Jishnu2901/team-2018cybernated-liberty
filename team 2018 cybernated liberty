@@ -1,0 +1,119 @@
+const int trigPin = 11;//Pin to send out sound wave
+const int echoPin = 10; //Pin to listen for sound wave coming back
+
+int ledPin = 5;//Pin to turn Led on
+int buttonApin = 9;//Pin to arm the alarm
+int buttonBpin = 8;//Pin to disarm the alarm
+int value_A;//Value of pin A
+int value_B;//Value of pin B
+
+
+int buzzer = 6;//the pin of the active buzzer
+int delayTime1= 250;
+int delayTime2=250;
+
+long duration; // Travel time obtained from sensor
+int distance; // calculated distance of how far away the object is 
+
+void setup() {
+
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonApin, INPUT_PULLUP);  
+  pinMode(buttonBpin, INPUT_PULLUP);  
+
+  pinMode(buzzer, OUTPUT);
+  
+  pinMode(12, INPUT);
+  
+  Serial.begin(9600);
+
+  
+
+}
+
+void loop() {
+
+  // Check to see the state of button A and B
+  value_A = digitalRead(buttonApin);
+  value_B = digitalRead(buttonBpin);
+  
+  delay(500);
+
+  
+   if (value_A == LOW)
+  {
+    //If the alarm is armed, turn the LED on
+    digitalWrite(ledPin, HIGH);
+    while(ledPin, HIGH)
+    {
+      // Send out a sound wave and calculate how far away the nearest object is to it. 
+      digitalWrite(trigPin, LOW);
+      delayMicroseconds(2);
+    
+      digitalWrite(trigPin, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(trigPin, LOW);
+    
+      duration = pulseIn(echoPin, HIGH);
+      distance = duration*0.034/2;
+    
+      Serial.print("Distance:");
+      Serial.println(distance);
+
+      while (distance < 98)
+      {
+        // If the distance is less than 98 cm, then sound the alarm and make the led flash
+           
+            digitalWrite(buzzer,HIGH);
+            digitalWrite(ledPin, HIGH);
+            delay(delayTime1);//wait for 1ms
+            digitalWrite(buzzer,LOW);
+            digitalWrite(ledPin, LOW);
+            delay(delayTime1);//wait for 1ms
+
+ 
+                digitalWrite(buzzer,HIGH);
+                digitalWrite(ledPin, HIGH);
+                delay(delayTime2);//wait for 2ms
+                digitalWrite(buzzer,LOW);
+                digitalWrite(ledPin, LOW);
+                delay(delayTime2);//wait for 2ms   
+
+             // If the B button is pushed, shut the alarm off and disarm it
+             if (digitalRead(buttonBpin) == LOW)
+              {
+                break;
+                }
+      
+          
+      }
+    
+      delay(100);
+
+      // If b button is pressed, disarm the alarm
+      if (digitalRead(buttonBpin) == LOW)
+      {
+        break;
+      }
+      
+
+      }
+
+      
+  }
+  // If the alarm is disarmed, turn the LED off
+  if (value_B == LOW)
+  {
+    digitalWrite(ledPin, LOW);
+  }
+
+ 
+  
+  
+ 
+}
+
+ 
